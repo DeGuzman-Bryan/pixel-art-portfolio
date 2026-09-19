@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Pixel Art Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'pixel': ['"Press Start 2P"', 'cursive'],
+                    },
+                    colors: {
+                        'retro-bg': '#2d2d44',
+                        'retro-dark': '#1a1a24',
+                        'retro-border': '#8b9bb4',
+                        'retro-accent': '#e5b083',
+                        'retro-text': '#d8d8d8'
+                    },
+                    boxShadow: {
+                        'pixel-solid': '4px 4px 0px 0px rgba(26, 26, 36, 1)',
+                        'pixel-hover': '2px 2px 0px 0px rgba(26, 26, 36, 1)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a24; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8b9bb4; 
+            border: 2px solid #1a1a24;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e5b083; 
+        }
+        
+        .pixelated {
+            image-rendering: pixelated;
+        }
+
+        .pixel-container {
+            border: 4px solid #1a1a24;
+            background-color: #3b3b58;
+            box-shadow: inset -4px -4px 0px rgba(0,0,0,0.2), inset 4px 4px 0px rgba(255,255,255,0.1);
+        }
+
+        body {
+            background-image: url('Background1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            image-rendering: pixelated;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 26, 36, 0.75);
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="text-retro-text font-pixel antialiased leading-relaxed min-h-screen">
+
+    <!-- MAIN MENU OVERLAY -->
+    <div id="main-menu-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-retro-dark/95 backdrop-blur-md p-4">
+        <div class="pixel-container p-8 md:p-12 max-w-lg w-full text-center border-4 border-retro-border shadow-pixel-solid">
+            <h1 class="text-2xl md:text-4xl text-retro-accent mb-2 tracking-widest animate-pulse">MAIN MENU</h1>
+            <p class="text-xs text-retro-border mb-8 tracking-widest">SELECT AN OPTION</p>
+
+            <div class="flex flex-col space-y-4">
+                <button onclick="startGame()" class="bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark text-white border-4 border-retro-dark py-4 px-6 text-sm tracking-wider transition-all shadow-pixel-solid hover:shadow-pixel-hover active:translate-y-1">
+                    > START
+                </button>
+                <button onclick="openProfileFromMenu()" class="bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark text-white border-4 border-retro-dark py-4 px-6 text-sm tracking-wider transition-all shadow-pixel-solid hover:shadow-pixel-hover active:translate-y-1">
+                    > PROFILE
+                </button>
+                <button onclick="exitSystem()" class="bg-[#4a4a6a] hover:bg-red-500 hover:text-white text-white border-4 border-retro-dark py-4 px-6 text-sm tracking-wider transition-all shadow-pixel-solid hover:shadow-pixel-hover active:translate-y-1">
+                    > MENU (EXIT)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="bg-retro-dark/90 border-b-4 border-retro-border p-6 mb-8 sticky top-0 z-10 backdrop-blur-sm flex justify-between items-center px-4 md:px-12">
+        <button onclick="returnToMainMenu()" class="text-xs text-retro-accent hover:text-white border-2 border-retro-border bg-retro-dark px-3 py-2 transition-colors">
+            &lt; MENU
+        </button>
+        <h1 class="text-2xl md:text-4xl text-retro-accent tracking-widest drop-shadow-md text-center">PIXEL ARTWORKS</h1>
+        <div class="w-16"></div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex justify-center flex-wrap gap-4 md:space-x-8 mb-8 text-sm md:text-base font-pixel px-4 bg-retro-dark/80 py-4 rounded-lg mx-auto max-w-fit border-2 border-retro-border backdrop-blur-sm">
+        <button onclick="showSection('humans')" id="tab-humans" class="text-retro-accent border-b-4 border-retro-accent pb-2 hover:text-white transition-colors cursor-pointer outline-none">HUMANS</button>
+        <button onclick="showSection('mythical')" id="tab-mythical" class="text-gray-500 border-b-4 border-transparent pb-2 hover:text-white transition-colors cursor-pointer outline-none">MYTHICAL</button>
+        <button onclick="showSection('items')" id="tab-items" class="text-gray-500 border-b-4 border-transparent pb-2 hover:text-white transition-colors cursor-pointer outline-none">ITEMS</button>
+        <button onclick="showSection('profile')" id="tab-profile" class="text-gray-500 border-b-4 border-transparent pb-2 hover:text-white transition-colors cursor-pointer outline-none">PROFILE</button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto px-4 max-w-6xl">
+
+        <!-- Profile Section -->
+        <section id="profile-section" class="hidden pixel-container p-6 md:p-10 mb-12 shadow-pixel-solid">
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                <div class="bg-retro-dark border-4 border-retro-border w-32 h-32 flex-shrink-0 flex items-center justify-center shadow-inner overflow-hidden">
+                    <img src="grad pic.png" alt="Bryan Joseph De Guzman" class="w-full h-full object-cover">
+                </div>
+                
+                <div class="text-center md:text-left">
+                    <h2 class="text-xl md:text-2xl text-retro-accent mb-2">BRYAN JOSEPH DE GUZMAN</h2>
+                    <h3 class="text-xs md:text-sm text-retro-border mb-6 tracking-widest">BSCS - Bachelor of Science in Computer Science</h3>
+                    
+                    <div class="text-sm md:text-base leading-loose text-gray-300 space-y-4">
+                        <p>
+                            I possess a profound dedication to the craft of pixel art, utilizing it as a medium for both technical expression and creative world-building. 
+                        </p>
+                        <p>
+                            My primary focus lies in the meticulous design of distinct characters, ensuring that every sprite extends beyond mere visual representation. I am passionate about constructing comprehensive lore, deep context, and engaging narratives for each creation. 
+                        </p>
+                        <p>
+                            I firmly believe that every pixel placed serves a fundamental purpose in telling a larger, interconnected story.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Humans Section -->
+        <section id="humans-section">
+            <h2 class="text-2xl text-center mb-8 text-retro-border">--- HUMANS ---</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
+                <!-- Old Man Sprite Card -->
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="old_man_sprite.png" alt="Elderly Resident" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Char: Old Resident</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Class:</span> Town Elder / Civilian</p>
+                            <p><span class="text-retro-border">Context:</span> A peaceful town resident recognized by his classic yellow shirt, brown trousers, and white mustache.</p>
+                            <p><span class="text-retro-border">Lore:</span> Having spent decades witnessing the village grow, he offers wise advice and old folklore to traveling adventurers passing through.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Khrixia Sprite Card -->
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="khrixia_sprite.png" alt="Khrixia" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Char: Khrixia</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Class:</span> Novice Spellweaver / Adventurer</p>
+                            <p><span class="text-retro-border">Context:</span> A spirited young mage who travels across realms to study ancient elemental relics and magical arts.</p>
+                            <p><span class="text-retro-border">Lore:</span> Recognized by her crimson hair ribbon and energetic demeanor, Khrixia possesses a natural affinity for magic and an unyielding curiosity for unexplored dungeons.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Barbarian Card -->
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="barbarian_sprite.png" alt="Northern Barbarian" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Char: Northern Barbarian</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Class:</span> Berserker / Tribal Warrior</p>
+                            <p><span class="text-retro-border">Context:</span> A fearless warrior hailing from the frozen northern peaks, equipped with heavy armor plates and a battle-worn greataxe.</p>
+                            <p><span class="text-retro-border">Lore:</span> Raised in unforgiving wilderness conditions, this hardened fighter channels primal fury in combat to shatter frontline defenses.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Shadow Shinobi (Ninja) Card -->
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="ninja_sprite.png" alt="Shadow Shinobi" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Char: Shadow Shinobi</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Class:</span> Assassin / Master Ninja</p>
+                            <p><span class="text-retro-border">Context:</span> An elusive warrior clad in dark garb and a crimson headband, carrying a lethal back-slung katana.</p>
+                            <p><span class="text-retro-border">Lore:</span> Trained in mist-shrouded mountain monasteries, this silent operative strikes from the shadows before adversaries even notice their presence.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Alchemist Scientist Card -->
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="scientist_sprite.png" alt="Arcane Scientist" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Char: Arcane Scientist</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Class:</span> Alchemist / Researcher</p>
+                            <p><span class="text-retro-border">Context:</span> An eccentric scholar clad in a pristine white lab coat and protective goggles, holding a flask of volatile green liquid.</p>
+                            <p><span class="text-retro-border">Lore:</span> Dedicated to unlocking the secrets of elemental alchemy, he spends long nights concocting experimental potions to aid heroes on their journeys.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Jerick & Wyngard Sprite Card -->
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="jerick_wyngard_sprite.png" alt="Jerick & Wyngard" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Char: Jerick & Wyngard</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Class:</span> Vanguard Duo (Paladin & Ranger)</p>
+                            <p><span class="text-retro-border">Context:</span> An armored warrior in blue plate steel (Jerick) and a nimble forest scout clad in a green cloak (Wyngard) bound by a sworn brotherhood.</p>
+                            <p><span class="text-retro-border">Lore:</span> Standing shoulder-to-shoulder through endless perilous ventures, Jerick provides an impenetrable frontline shield while Wyngard delivers swift, precision marksmanship from the flanks.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Mythical Creatures Section -->
+        <section id="mythical-section" class="hidden">
+            <h2 class="text-2xl text-center mb-8 text-retro-border">--- MYTHICAL CREATURES ---</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="wolf_sprite.png" alt="Wolf Sprite" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Creature: Mythical Wolf</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Type:</span> Mythical Beast</p>
+                            <p><span class="text-retro-border">Context:</span> A fierce mythical wolf with glowing red eyes and sharp fangs.</p>
+                            <p><span class="text-retro-border">Lore:</span> Stalks the twilight realms, guarding ancient grounds with unyielding fierce instinct.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="slime_sprite.png" alt="Acid Slime" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Creature: Acid Slime</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Type:</span> Amorphous Organism</p>
+                            <p><span class="text-retro-border">Context:</span> Inhabits damp dungeon vaults and subterranean waterways, dissolving organic debris to sustain its viscous form.</p>
+                            <p><span class="text-retro-border">Lore:</span> Born from magic-infused runoff, these sentient blobs absorb ambient mana and defend their territory by secreting corrosive acids.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="goblin_sprite.png" alt="Goblin Scout" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Creature: Goblin Scout</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Type:</span> Humanoid Monster</p>
+                            <p><span class="text-retro-border">Context:</span> Roams murky forest borders and rocky caves in small raiding packs, scouting ahead for targets.</p>
+                            <p><span class="text-retro-border">Lore:</span> Cunning and agile, these green-skinned creatures rely on stealth, sharp iron daggers, and sharp senses to surprise unsuspecting travelers.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="zombie_sprite.png" alt="Undead Zombie" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Creature: Undead Zombie</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Type:</span> Reanimated Undead</p>
+                            <p><span class="text-retro-border">Context:</span> Rises from ancient burial grounds and ruined crypts, wandering aimlessly in search of living prey.</p>
+                            <p><span class="text-retro-border">Lore:</span> Animated by dark necromancy, these persistent corpses feel no pain and relentlessly pursue travelers through forgotten catacombs.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="winged_pig_sprite.png" alt="Winged Pig" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Creature: Celestial Winged Pig</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Type:</span> Enchanted Beast</p>
+                            <p><span class="text-retro-border">Context:</span> Soars through cloudlit mountain peaks and enchanted sky sanctuaries, far above the reach of terrestrial predators.</p>
+                            <p><span class="text-retro-border">Lore:</span> Blessed by ancient celestial spirits, these rare winged swine bring good fortune and joy to any traveler fortunate enough to spot them gliding across the horizon.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="unicorn_sprite.png" alt="Celestial Unicorn" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Creature: Celestial Unicorn</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Type:</span> Legendary Beast</p>
+                            <p><span class="text-retro-border">Context:</span> Inhabits enchanted starlight glades and sacred ancient forests, guarded by arcane barriers.</p>
+                            <p><span class="text-retro-border">Lore:</span> A pure equine creature bearing a spiraled radiant horn capable of purifying corrupt magic and healing mortal wounds with a single touch.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Items Section -->
+        <section id="items-section" class="hidden">
+            <h2 class="text-2xl text-center mb-8 text-retro-border">--- ITEMS ---</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="potion_sprite.png" alt="Health Potion" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Item: Health Potion</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Role:</span> Consumable</p>
+                            <p><span class="text-retro-border">Context:</span> Brewed in subterranean alchemy chambers, this basic item restores vitality.</p>
+                            <p><span class="text-retro-border">Lore:</span> Sealed inside reinforced glass with a wax-soaked cork to prevent premature evaporation in harsh environments.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="broom_sprite.png" alt="Witch Broomstick" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Item: Witch Broomstick</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Role:</span> Equipment / Mount</p>
+                            <p><span class="text-retro-border">Context:</span> Crafted from elderwood branches and bound with enchanted cordage, enabling aerial navigation.</p>
+                            <p><span class="text-retro-border">Lore:</span> Imbued with levitation runes along the shaft, allowing magic wielders to travel across treacherous terrain effortlessly.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="sword_sprite.png" alt="Ruby Broadsword" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Item: Ruby Broadsword</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Role:</span> Melee Weapon</p>
+                            <p><span class="text-retro-border">Context:</span> Forged from high-grade refined steel with a gilded crossguard and an embedded ruby core.</p>
+                            <p><span class="text-retro-border">Lore:</span> Standard issue blade for realm knights, enchanted to channel offensive physical energy through the hilt's crystal gemstone.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="wand_sprite.png" alt="Arcane Wand" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Item: Arcane Wand</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Role:</span> Magic Catalyst</p>
+                            <p><span class="text-retro-border">Context:</span> Carved from polished elderwood and capped with a glowing cyan mana crystal tip.</p>
+                            <p><span class="text-retro-border">Lore:</span> Handcrafted by elite spellweavers to focus elemental energy into precise, high-potency magic projectiles.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="bow_sprite.png" alt="Huntsman Longbow" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Item: Huntsman Longbow</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Role:</span> Ranged Weapon</p>
+                            <p><span class="text-retro-border">Context:</span> Bent from cured yew wood, capped with gold tips, and strung with tightly spun silken cord.</p>
+                            <p><span class="text-retro-border">Lore:</span> Favored by woodland rangers for silent long-distance marksmanship through dense foliage and open valleys.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
+                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
+                        <img src="rope_sprite.png" alt="Adventurer's Rope" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg text-retro-accent mb-2">Item: Adventurer's Rope</h3>
+                        <div class="text-xs space-y-3 leading-loose">
+                            <p><span class="text-retro-border">Role:</span> Utility / Gear</p>
+                            <p><span class="text-retro-border">Context:</span> Woven from high-tensile hemp fibers and bound into a tight, portable coil.</p>
+                            <p><span class="text-retro-border">Lore:</span> An indispensable tool for dungeon exploration, spelunking steep cliffs, and securing heavy gear on long journeys.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function startGame() {
+            document.getElementById('main-menu-overlay').classList.add('hidden');
+            showSection('humans');
+        }
+
+        function openProfileFromMenu() {
+            document.getElementById('main-menu-overlay').classList.add('hidden');
+            showSection('profile');
+        }
+
+        function returnToMainMenu() {
+            document.getElementById('main-menu-overlay').classList.remove('hidden');
+        }
+
+        function exitSystem() {
+            if (confirm("SYSTEM SHUTDOWN: Do you want to terminate this session?")) {
+                window.close();
+                document.body.innerHTML = "<div class='flex h-screen items-center justify-center text-center font-pixel text-retro-accent bg-retro-dark'><p>SYSTEM TERMINATED.<br><br>PLEASE CLOSE THIS TAB.</p></div>";
+            }
+        }
+
+        function showSection(section) {
+            const sections = ['humans', 'mythical', 'items', 'profile'];
+            
+            sections.forEach(sec => {
+                const secElement = document.getElementById(`${sec}-section`);
+                const tabElement = document.getElementById(`tab-${sec}`);
+                
+                if (secElement && tabElement) {
+                    if (sec === section) {
+                        secElement.classList.remove('hidden');
+                        tabElement.classList.add('text-retro-accent', 'border-retro-accent');
+                        tabElement.classList.remove('text-gray-500', 'border-transparent');
+                    } else {
+                        secElement.classList.add('hidden');
+                        tabElement.classList.remove('text-retro-accent', 'border-retro-accent');
+                        tabElement.classList.add('text-gray-500', 'border-transparent');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
