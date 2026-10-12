@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Pixel Art Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>De Guzman's Artworks</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -29,22 +29,51 @@
         }
     </script>
     <style>
+        /* Mobile Touch & Safari Fixes */
+        html, body {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            overflow-x: hidden;
+        }
+
+        /* Safe Area Padding for iOS Notches & Home Bars */
+        .safe-pb {
+            padding-bottom: max(1rem, env(safe-area-inset-bottom));
+        }
+        .safe-pt {
+            padding-top: max(0.5rem, env(safe-area-inset-top));
+        }
+        .safe-px {
+            padding-left: max(0.75rem, env(safe-area-inset-left));
+            padding-right: max(0.75rem, env(safe-area-inset-right));
+        }
+
+        /* Smooth Touch Scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
         ::-webkit-scrollbar {
-            width: 12px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: #1a1a24; 
         }
         ::-webkit-scrollbar-thumb {
             background: #8b9bb4; 
-            border: 2px solid #1a1a24;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #e5b083; 
+            border: 1px solid #1a1a24;
         }
         
         .pixelated {
             image-rendering: pixelated;
+            image-rendering: crisp-edges;
         }
 
         .pixel-container {
@@ -68,364 +97,701 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(26, 26, 36, 0.75);
+            background-color: rgba(26, 26, 36, 0.8);
             z-index: -1;
+        }
+
+        video {
+            background-color: #1a1a24;
+            max-width: 100%;
         }
     </style>
 </head>
-<body class="text-retro-text font-pixel antialiased leading-relaxed min-h-screen">
+<body class="text-retro-text font-pixel antialiased leading-relaxed min-h-[100dvh] flex flex-col justify-between safe-px">
+
+    <!-- FULL IMAGE LIGHTBOX MODAL -->
+    <div id="image-modal" class="fixed inset-0 z-50 hidden flex-col items-center justify-center bg-retro-dark/95 backdrop-blur-md p-4 safe-pt safe-pb" onclick="closeImageModal()">
+        <div class="relative max-w-4xl max-h-[85vh] w-full flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="closeImageModal()" class="absolute -top-10 right-0 text-[10px] sm:text-xs text-retro-accent hover:text-white border-2 border-retro-border bg-retro-dark px-3 py-2 font-pixel shadow-pixel-solid active:scale-95">
+                [X] CLOSE
+            </button>
+            <div class="pixel-container p-2 border-4 border-retro-border shadow-pixel-solid overflow-hidden flex items-center justify-center w-full">
+                <img id="modal-img" src="" alt="Full View" class="max-h-[70vh] max-w-full object-contain">
+            </div>
+            <p id="modal-caption" class="text-[10px] sm:text-xs text-retro-accent mt-3 font-pixel text-center tracking-wide px-2"></p>
+        </div>
+    </div>
 
     <!-- MAIN MENU OVERLAY -->
-    <div id="main-menu-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-retro-dark/95 backdrop-blur-md p-4">
-        <div class="pixel-container p-8 md:p-12 max-w-lg w-full text-center border-4 border-retro-border shadow-pixel-solid">
-            <h1 class="text-2xl md:text-4xl text-retro-accent mb-2 tracking-widest animate-pulse">MAIN MENU</h1>
-            <p class="text-xs text-retro-border mb-8 tracking-widest">SELECT AN OPTION</p>
+    <div id="main-menu-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-retro-dark/95 backdrop-blur-md p-4 safe-pt safe-pb overflow-y-auto">
+        <div class="pixel-container p-5 sm:p-8 md:p-12 max-w-lg w-full text-center border-4 border-retro-border shadow-pixel-solid my-auto max-h-[90vh] overflow-y-auto">
+            <h1 class="text-sm sm:text-xl md:text-3xl text-retro-accent mb-2 tracking-wide sm:tracking-widest animate-pulse">DE GUZMAN'S ARTWORKS</h1>
+            <p class="text-[9px] sm:text-xs text-retro-border mb-6 sm:mb-8 tracking-wider">SELECT AN OPTION</p>
 
-            <div class="flex flex-col space-y-4">
-                <button onclick="startGame()" class="bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark text-white border-4 border-retro-dark py-4 px-6 text-sm tracking-wider transition-all shadow-pixel-solid hover:shadow-pixel-hover active:translate-y-1">
+            <div class="flex flex-col space-y-3 sm:space-y-4">
+                <button onclick="startGame()" class="bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark active:bg-retro-accent active:text-retro-dark text-white border-4 border-retro-dark py-3.5 px-4 text-xs sm:text-sm tracking-wider transition-all shadow-pixel-solid active:translate-y-1">
                     > START
                 </button>
-                <button onclick="openProfileFromMenu()" class="bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark text-white border-4 border-retro-dark py-4 px-6 text-sm tracking-wider transition-all shadow-pixel-solid hover:shadow-pixel-hover active:translate-y-1">
+                <button onclick="openProfileFromMenu()" class="bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark active:bg-retro-accent active:text-retro-dark text-white border-4 border-retro-dark py-3.5 px-4 text-xs sm:text-sm tracking-wider transition-all shadow-pixel-solid active:translate-y-1">
                     > PROFILE
                 </button>
-                <button onclick="exitSystem()" class="bg-[#4a4a6a] hover:bg-red-500 hover:text-white text-white border-4 border-retro-dark py-4 px-6 text-sm tracking-wider transition-all shadow-pixel-solid hover:shadow-pixel-hover active:translate-y-1">
+                <button onclick="exitSystem()" class="bg-[#4a4a6a] hover:bg-red-500 hover:text-white active:bg-red-600 text-white border-4 border-retro-dark py-3.5 px-4 text-xs sm:text-sm tracking-wider transition-all shadow-pixel-solid active:translate-y-1">
                     > MENU (EXIT)
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Header Section -->
-    <header class="bg-retro-dark/90 border-b-4 border-retro-border p-6 mb-8 sticky top-0 z-10 backdrop-blur-sm flex justify-between items-center px-4 md:px-12">
-        <button onclick="returnToMainMenu()" class="text-xs text-retro-accent hover:text-white border-2 border-retro-border bg-retro-dark px-3 py-2 transition-colors">
-            &lt; MENU
-        </button>
-        <h1 class="text-2xl md:text-4xl text-retro-accent tracking-widest drop-shadow-md text-center">PIXEL ARTWORKS</h1>
-        <div class="w-16"></div>
-    </header>
+    <div>
+        <!-- Header Section -->
+        <header class="bg-retro-dark/95 border-b-4 border-retro-border p-2.5 sm:p-5 mb-4 sm:mb-8 sticky top-0 z-40 backdrop-blur-md flex justify-between items-center gap-2 safe-pt">
+            <button onclick="returnToMainMenu()" class="text-[9px] sm:text-xs text-retro-accent hover:text-white border-2 border-retro-border bg-retro-dark px-2.5 py-1.5 sm:px-3 sm:py-2 transition-colors flex-shrink-0 active:scale-95">
+                &lt; MENU
+            </button>
+            <h1 class="text-[10px] min-[360px]:text-xs sm:text-lg md:text-2xl text-retro-accent tracking-wide sm:tracking-widest drop-shadow-md text-center truncate">DE GUZMAN'S ARTWORKS</h1>
+            <div class="w-8 sm:w-16 flex-shrink-0"></div>
+        </header>
 
-    <!-- Navigation Tabs -->
-    <nav class="flex justify-center flex-wrap gap-4 md:space-x-8 mb-8 text-sm md:text-base font-pixel px-4 bg-retro-dark/80 py-4 rounded-lg mx-auto max-w-fit border-2 border-retro-border backdrop-blur-sm">
-        <button onclick="showSection('humans')" id="tab-humans" class="text-retro-accent border-b-4 border-retro-accent pb-2 hover:text-white transition-colors cursor-pointer outline-none">HUMANS</button>
-        <button onclick="showSection('mythical')" id="tab-mythical" class="text-gray-500 border-b-4 border-transparent pb-2 hover:text-white transition-colors cursor-pointer outline-none">MYTHICAL</button>
-        <button onclick="showSection('items')" id="tab-items" class="text-gray-500 border-b-4 border-transparent pb-2 hover:text-white transition-colors cursor-pointer outline-none">ITEMS</button>
-        <button onclick="showSection('profile')" id="tab-profile" class="text-gray-500 border-b-4 border-transparent pb-2 hover:text-white transition-colors cursor-pointer outline-none">PROFILE</button>
-    </nav>
+        <!-- Navigation Tabs (Horizontal Scrollable on Small Mobile Screens) -->
+        <nav class="flex items-center overflow-x-auto no-scrollbar gap-2 sm:gap-4 mb-6 text-[9px] min-[380px]:text-[10px] sm:text-xs font-pixel px-3 bg-retro-dark/90 py-3 rounded-lg mx-auto max-w-full sm:max-w-fit border-2 border-retro-border backdrop-blur-md whitespace-nowrap">
+            <button onclick="showSection('pixel-art')" id="tab-pixel-art" class="text-retro-accent border-b-2 sm:border-b-4 border-retro-accent pb-1 hover:text-white transition-colors cursor-pointer outline-none flex-shrink-0">PIXEL ARTWORKS</button>
+            <button onclick="showSection('animation')" id="tab-animation" class="text-gray-400 border-b-2 sm:border-b-4 border-transparent pb-1 hover:text-white transition-colors cursor-pointer outline-none flex-shrink-0">ANIMATION</button>
+            <button onclick="showSection('music')" id="tab-music" class="text-gray-400 border-b-2 sm:border-b-4 border-transparent pb-1 hover:text-white transition-colors cursor-pointer outline-none flex-shrink-0">MUSIC PRODUCTION</button>
+            <button onclick="showSection('photography')" id="tab-photography" class="text-gray-400 border-b-2 sm:border-b-4 border-transparent pb-1 hover:text-white transition-colors cursor-pointer outline-none flex-shrink-0">PHOTOGRAPHY</button>
+            <button onclick="showSection('schoolworks')" id="tab-schoolworks" class="text-gray-400 border-b-2 sm:border-b-4 border-transparent pb-1 hover:text-white transition-colors cursor-pointer outline-none flex-shrink-0">SCHOOLWORKS</button>
+            <button onclick="showSection('profile')" id="tab-profile" class="text-gray-400 border-b-2 sm:border-b-4 border-transparent pb-1 hover:text-white transition-colors cursor-pointer outline-none flex-shrink-0">PROFILE</button>
+        </nav>
 
-    <!-- Main Content Container -->
-    <main class="container mx-auto px-4 max-w-6xl">
+        <!-- Main Content Container -->
+        <main class="container mx-auto px-1.5 sm:px-4 max-w-6xl">
 
-        <!-- Profile Section -->
-        <section id="profile-section" class="hidden pixel-container p-6 md:p-10 mb-12 shadow-pixel-solid">
-            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
-                <div class="bg-retro-dark border-4 border-retro-border w-32 h-32 flex-shrink-0 flex items-center justify-center shadow-inner overflow-hidden">
-                    <img src="grad pic.png" alt="Bryan Joseph De Guzman" class="w-full h-full object-cover">
-                </div>
-                
-                <div class="text-center md:text-left">
-                    <h2 class="text-xl md:text-2xl text-retro-accent mb-2">BRYAN JOSEPH DE GUZMAN</h2>
-                    <h3 class="text-xs md:text-sm text-retro-border mb-6 tracking-widest">BSCS - Bachelor of Science in Computer Science</h3>
+            <!-- Profile Section -->
+            <section id="profile-section" class="hidden pixel-container p-4 sm:p-6 md:p-10 mb-8 shadow-pixel-solid">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-5 sm:gap-8">
+                    <div class="bg-retro-dark border-4 border-retro-border w-28 h-28 sm:w-36 sm:h-36 flex-shrink-0 flex items-center justify-center shadow-inner overflow-hidden cursor-pointer" onclick="openImageModal('grad pic.png', 'BRYAN JOSEPH DE GUZMAN - PROFILE')">
+                        <img src="grad pic.png" alt="Bryan Joseph De Guzman" class="w-full h-full object-cover transition-transform hover:scale-105">
+                    </div>
                     
-                    <div class="text-sm md:text-base leading-loose text-gray-300 space-y-4">
-                        <p>
-                            I possess a profound dedication to the craft of pixel art, utilizing it as a medium for both technical expression and creative world-building. 
-                        </p>
-                        <p>
-                            My primary focus lies in the meticulous design of distinct characters, ensuring that every sprite extends beyond mere visual representation. I am passionate about constructing comprehensive lore, deep context, and engaging narratives for each creation. 
-                        </p>
-                        <p>
-                            I firmly believe that every pixel placed serves a fundamental purpose in telling a larger, interconnected story.
-                        </p>
+                    <div class="text-center md:text-left">
+                        <h2 class="text-sm sm:text-xl md:text-2xl text-retro-accent mb-2">BRYAN JOSEPH DE GUZMAN</h2>
+                        <h3 class="text-[9px] sm:text-xs md:text-sm text-retro-border mb-4 tracking-wide sm:tracking-widest">BSCS - Bachelor of Science in Computer Science</h3>
+                        
+                        <div class="text-[11px] sm:text-xs md:text-base leading-relaxed text-gray-300 space-y-3">
+                            <p>
+                                Welcome to my official digital portfolio. This web application serves as an interactive platform designed to demonstrate my technical capabilities, creative methodology, and multidisciplinary projects across software engineering and digital arts.
+                            </p>
+                            <p>
+                                As a Computer Science scholar, my academic foundation focuses on software development, algorithmic design, and interactive media architecture. I specialize in integrating computer science principles with digital creativity—encompassing pixel art asset generation, 2D sprite animation, audio composition, and visual photography.
+                            </p>
+                            <p>
+                                My objective is to bridge the gap between technical rigor and artistic expression. Every digital asset, frame of animation, soundwave, and captured photographic composition within this portfolio is systematically crafted to contribute to cohesive world-building, functional user experience, and immersive digital storytelling.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Humans Section -->
-        <section id="humans-section">
-            <h2 class="text-2xl text-center mb-8 text-retro-border">--- HUMANS ---</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
-                <!-- Old Man Sprite Card -->
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="old_man_sprite.png" alt="Elderly Resident" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+            <!-- Combined Pixel Artworks Section -->
+            <section id="pixel-art-section">
+                
+                <!-- SUB-FOLDER TOGGLE BUTTONS INSIDE PIXEL ARTWORKS -->
+                <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mb-6">
+                    <button onclick="showPixelSubFolder('finished')" id="subtab-finished" class="bg-retro-accent text-retro-dark border-2 sm:border-4 border-retro-dark px-3 py-2 text-[9px] sm:text-xs font-pixel shadow-pixel-solid active:translate-y-0.5 flex items-center gap-1.5">
+                        📁 FINISHED SPRITES
+                    </button>
+                    <button onclick="showPixelSubFolder('proofs')" id="subtab-proofs" class="bg-[#4a4a6a] text-white border-2 sm:border-4 border-retro-dark px-3 py-2 text-[9px] sm:text-xs font-pixel shadow-pixel-solid hover:bg-retro-accent hover:text-retro-dark active:translate-y-0.5 flex items-center gap-1.5">
+                        📁 PROOFS OF MAKING THE SPRITE
+                    </button>
+                </div>
+
+                <!-- SUB-FOLDER 1: FINISHED SPRITES CONTAINER -->
+                <div id="pixel-finished-container">
+                    <!-- SUB-CATEGORY: HUMANS -->
+                    <h2 class="text-xs sm:text-lg md:text-xl text-center mb-4 text-retro-accent tracking-wide">--- CHARACTERS & HUMANS ---</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 pb-8">
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('old_man_sprite.png', 'Char: Old Resident')">
+                                <img src="old_man_sprite.png" alt="Elderly Resident" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Char: Old Resident</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Class:</span> Town Elder / Civilian</p>
+                                    <p><span class="text-retro-border">Context:</span> A peaceful town resident recognized by his classic yellow shirt, brown trousers, and white mustache.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Having spent decades witnessing the village grow, he offers wise advice and old folklore to traveling adventurers passing through.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('khrixia_sprite.png', 'Char: Khrixia')">
+                                <img src="khrixia_sprite.png" alt="Khrixia" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Char: Khrixia</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Class:</span> Novice Spellweaver / Adventurer</p>
+                                    <p><span class="text-retro-border">Context:</span> A spirited young mage who travels across realms to study ancient elemental relics and magical arts.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Recognized by her crimson hair ribbon and energetic demeanor, Khrixia possesses a natural affinity for magic and an unyielding curiosity for unexplored dungeons.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('barbarian_sprite.png', 'Char: Northern Barbarian')">
+                                <img src="barbarian_sprite.png" alt="Northern Barbarian" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Char: Northern Barbarian</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Class:</span> Berserker / Tribal Warrior</p>
+                                    <p><span class="text-retro-border">Context:</span> A fearless warrior hailing from the frozen northern peaks, equipped with heavy armor plates and a battle-worn greataxe.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Raised in unforgiving wilderness conditions, this hardened fighter channels primal fury in combat to shatter frontline defenses.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('ninja_sprite.png', 'Char: Shadow Shinobi')">
+                                <img src="ninja_sprite.png" alt="Shadow Shinobi" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Char: Shadow Shinobi</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Class:</span> Assassin / Master Ninja</p>
+                                    <p><span class="text-retro-border">Context:</span> An elusive warrior clad in dark garb and a crimson headband, carrying a lethal back-slung katana.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Trained in mist-shrouded mountain monasteries, this silent operative strikes from the shadows before adversaries even notice their presence.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('scientist_sprite.png', 'Char: Arcane Scientist')">
+                                <img src="scientist_sprite.png" alt="Arcane Scientist" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Char: Arcane Scientist</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Class:</span> Alchemist / Researcher</p>
+                                    <p><span class="text-retro-border">Context:</span> An eccentric scholar clad in a pristine white lab coat and protective goggles, holding a flask of volatile green liquid.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Dedicated to unlocking the secrets of elemental alchemy, he spends long nights concocting experimental potions to aid heroes on their journeys.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('jerick_wyngard_sprite.png', 'Char: Jerick & Wyngard')">
+                                <img src="jerick_wyngard_sprite.png" alt="Jerick & Wyngard" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Char: Jerick & Wyngard</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Class:</span> Vanguard Duo (Paladin & Ranger)</p>
+                                    <p><span class="text-retro-border">Context:</span> An armored warrior in blue plate steel (Jerick) and a nimble forest scout clad in a green cloak (Wyngard) bound by a sworn brotherhood.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Standing shoulder-to-shoulder through endless perilous ventures, Jerick provides an impenetrable frontline shield while Wyngard delivers swift, precision marksmanship from the flanks.</p>
+                                </div>
+                            </div>
+                        </article>
                     </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Char: Old Resident</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Class:</span> Town Elder / Civilian</p>
-                            <p><span class="text-retro-border">Context:</span> A peaceful town resident recognized by his classic yellow shirt, brown trousers, and white mustache.</p>
-                            <p><span class="text-retro-border">Lore:</span> Having spent decades witnessing the village grow, he offers wise advice and old folklore to traveling adventurers passing through.</p>
+
+                    <!-- SUB-CATEGORY: MYTHICAL CREATURES -->
+                    <h2 class="text-xs sm:text-lg md:text-xl text-center mb-4 text-retro-accent border-t-2 border-retro-border/40 pt-6 tracking-wide">--- MYTHICAL CREATURES ---</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 pb-8">
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('wolf_sprite.png', 'Creature: Mythical Wolf')">
+                                <img src="wolf_sprite.png" alt="Wolf Sprite" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Creature: Mythical Wolf</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Type:</span> Mythical Beast</p>
+                                    <p><span class="text-retro-border">Context:</span> A fierce mythical wolf with glowing red eyes and sharp fangs.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Stalks the twilight realms, guarding ancient grounds with unyielding fierce instinct.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('slime_sprite.png', 'Creature: Acid Slime')">
+                                <img src="slime_sprite.png" alt="Acid Slime" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Creature: Acid Slime</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Type:</span> Amorphous Organism</p>
+                                    <p><span class="text-retro-border">Context:</span> Inhabits damp dungeon vaults and subterranean waterways, dissolving organic debris to sustain its viscous form.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Born from magic-infused runoff, these sentient blobs absorb ambient mana and defend their territory by secreting corrosive acids.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('goblin_sprite.png', 'Creature: Goblin Scout')">
+                                <img src="goblin_sprite.png" alt="Goblin Scout" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Creature: Goblin Scout</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Type:</span> Humanoid Monster</p>
+                                    <p><span class="text-retro-border">Context:</span> Roams murky forest borders and rocky caves in small raiding packs, scouting ahead for targets.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Cunning and agile, these green-skinned creatures rely on stealth, sharp iron daggers, and sharp senses to surprise unsuspecting travelers.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('zombie_sprite.png', 'Creature: Undead Zombie')">
+                                <img src="zombie_sprite.png" alt="Undead Zombie" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Creature: Undead Zombie</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Type:</span> Reanimated Undead</p>
+                                    <p><span class="text-retro-border">Context:</span> Rises from ancient burial grounds and ruined crypts, wandering aimlessly in search of living prey.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Animated by dark necromancy, these persistent corpses feel no pain and relentlessly pursue travelers through forgotten catacombs.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('winged_pig_sprite.png', 'Creature: Celestial Winged Pig')">
+                                <img src="winged_pig_sprite.png" alt="Winged Pig" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Creature: Celestial Winged Pig</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Type:</span> Enchanted Beast</p>
+                                    <p><span class="text-retro-border">Context:</span> Soars through cloudlit mountain peaks and enchanted sky sanctuaries, far above the reach of terrestrial predators.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Blessed by ancient celestial spirits, these rare winged swine bring good fortune and joy to any traveler fortunate enough to spot them gliding across the horizon.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('unicorn_sprite.png', 'Creature: Celestial Unicorn')">
+                                <img src="unicorn_sprite.png" alt="Celestial Unicorn" class="pixelated h-32 sm:h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Creature: Celestial Unicorn</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Type:</span> Legendary Beast</p>
+                                    <p><span class="text-retro-border">Context:</span> Inhabits enchanted starlight glades and sacred ancient forests, guarded by arcane barriers.</p>
+                                    <p><span class="text-retro-border">Lore:</span> A pure equine creature bearing a spiraled radiant horn capable of purifying corrupt magic and healing mortal wounds with a single touch.</p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <!-- SUB-CATEGORY: ITEMS & EQUIPMENT -->
+                    <h2 class="text-xs sm:text-lg md:text-xl text-center mb-4 text-retro-accent border-t-2 border-retro-border/40 pt-6 tracking-wide">--- ITEMS & EQUIPMENT ---</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 pb-10">
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[140px] sm:min-h-[200px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('potion_sprite.png', 'Item: Health Potion')">
+                                <img src="potion_sprite.png" alt="Health Potion" class="pixelated h-24 sm:h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Item: Health Potion</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Role:</span> Consumable</p>
+                                    <p><span class="text-retro-border">Context:</span> Brewed in subterranean alchemy chambers, this basic item restores vitality.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Sealed inside reinforced glass with a wax-soaked cork to prevent premature evaporation in harsh environments.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[140px] sm:min-h-[200px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('broom_sprite.png', 'Item: Witch Broomstick')">
+                                <img src="broom_sprite.png" alt="Witch Broomstick" class="pixelated h-24 sm:h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Item: Witch Broomstick</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Role:</span> Equipment / Mount</p>
+                                    <p><span class="text-retro-border">Context:</span> Crafted from elderwood branches and bound with enchanted cordage, enabling aerial navigation.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Imbued with levitation runes along the shaft, allowing magic wielders to travel across treacherous terrain effortlessly.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[140px] sm:min-h-[200px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('sword_sprite.png', 'Item: Ruby Broadsword')">
+                                <img src="sword_sprite.png" alt="Ruby Broadsword" class="pixelated h-24 sm:h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Item: Ruby Broadsword</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Role:</span> Melee Weapon</p>
+                                    <p><span class="text-retro-border">Context:</span> Forged from high-grade refined steel with a gilded crossguard and an embedded ruby core.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Standard issue blade for realm knights, enchanted to channel offensive physical energy through the hilt's crystal gemstone.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[140px] sm:min-h-[200px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('wand_sprite.png', 'Item: Arcane Wand')">
+                                <img src="wand_sprite.png" alt="Arcane Wand" class="pixelated h-24 sm:h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Item: Arcane Wand</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Role:</span> Magic Catalyst</p>
+                                    <p><span class="text-retro-border">Context:</span> Carved from polished elderwood and capped with a glowing cyan mana crystal tip.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Handcrafted by elite spellweavers to focus elemental energy into precise, high-potency magic projectiles.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[140px] sm:min-h-[200px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('bow_sprite.png', 'Item: Huntsman Longbow')">
+                                <img src="bow_sprite.png" alt="Huntsman Longbow" class="pixelated h-24 sm:h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Item: Huntsman Longbow</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Role:</span> Ranged Weapon</p>
+                                    <p><span class="text-retro-border">Context:</span> Bent from cured yew wood, capped with gold tips, and strung with tightly spun silken cord.</p>
+                                    <p><span class="text-retro-border">Lore:</span> Favored by woodland rangers for silent long-distance marksmanship through dense foliage and open valleys.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-4">
+                            <div class="bg-retro-dark p-3 flex justify-center items-center mb-3 min-h-[140px] sm:min-h-[200px] border-2 border-retro-border relative overflow-hidden cursor-pointer" onclick="openImageModal('rope_sprite.png', 'Item: Adventurers Rope')">
+                                <img src="rope_sprite.png" alt="Adventurer's Rope" class="pixelated h-24 sm:h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xs sm:text-lg text-retro-accent mb-2">Item: Adventurer's Rope</h3>
+                                <div class="text-[10px] sm:text-xs space-y-2 leading-relaxed">
+                                    <p><span class="text-retro-border">Role:</span> Utility / Gear</p>
+                                    <p><span class="text-retro-border">Context:</span> Woven from high-tensile hemp fibers and bound into a tight, portable coil.</p>
+                                    <p><span class="text-retro-border">Lore:</span> An indispensable tool for dungeon exploration, spelunking steep cliffs, and securing heavy gear on long journeys.</p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- SUB-FOLDER 2: PROOFS OF MAKING THE SPRITE CONTAINER -->
+                <div id="pixel-proofs-container" class="hidden">
+                    <h2 class="text-xs sm:text-lg md:text-xl text-center mb-2 text-retro-accent tracking-wide">--- 📁 SPRITE CREATION PROOFS ---</h2>
+                    <p class="text-[9px] sm:text-xs text-center text-retro-border mb-6 tracking-wide">(TAP ANY CARD TO VIEW FULL SIZE)</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-10">
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                            <div class="bg-retro-dark p-1.5 flex justify-center items-center mb-2 min-h-[140px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('sprites/Pixel1 (1).jpg', 'Sprite Creation Proof 1')">
+                                <img src="sprites/Pixel1 (1).jpg" alt="Creation Proof 1" class="h-32 w-full object-cover border border-retro-dark">
+                            </div>
+                            <h3 class="text-[11px] sm:text-xs text-retro-accent mb-0.5">Creation Proof #1</h3>
+                            <p class="text-[9px] text-retro-border">sprites/Pixel1 (1).jpg</p>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                            <div class="bg-retro-dark p-1.5 flex justify-center items-center mb-2 min-h-[140px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('sprites/Pixel1 (2).jpg', 'Sprite Creation Proof 2')">
+                                <img src="sprites/Pixel1 (2).jpg" alt="Creation Proof 2" class="h-32 w-full object-cover border border-retro-dark">
+                            </div>
+                            <h3 class="text-[11px] sm:text-xs text-retro-accent mb-0.5">Creation Proof #2</h3>
+                            <p class="text-[9px] text-retro-border">sprites/Pixel1 (2).jpg</p>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                            <div class="bg-retro-dark p-1.5 flex justify-center items-center mb-2 min-h-[140px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('sprites/Pixel1 (3).jpg', 'Sprite Creation Proof 3')">
+                                <img src="sprites/Pixel1 (3).jpg" alt="Creation Proof 3" class="h-32 w-full object-cover border border-retro-dark">
+                            </div>
+                            <h3 class="text-[11px] sm:text-xs text-retro-accent mb-0.5">Creation Proof #3</h3>
+                            <p class="text-[9px] text-retro-border">sprites/Pixel1 (3).jpg</p>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                            <div class="bg-retro-dark p-1.5 flex justify-center items-center mb-2 min-h-[140px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('sprites/Pixel1 (4).jpg', 'Sprite Creation Proof 4')">
+                                <img src="sprites/Pixel1 (4).jpg" alt="Creation Proof 4" class="h-32 w-full object-cover border border-retro-dark">
+                            </div>
+                            <h3 class="text-[11px] sm:text-xs text-retro-accent mb-0.5">Creation Proof #4</h3>
+                            <p class="text-[9px] text-retro-border">sprites/Pixel1 (4).jpg</p>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                            <div class="bg-retro-dark p-1.5 flex justify-center items-center mb-2 min-h-[140px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('sprites/Pixel1 (5).jpg', 'Sprite Creation Proof 5')">
+                                <img src="sprites/Pixel1 (5).jpg" alt="Creation Proof 5" class="h-32 w-full object-cover border border-retro-dark">
+                            </div>
+                            <h3 class="text-[11px] sm:text-xs text-retro-accent mb-0.5">Creation Proof #5</h3>
+                            <p class="text-[9px] text-retro-border">sprites/Pixel1 (5).jpg</p>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                            <div class="bg-retro-dark p-1.5 flex justify-center items-center mb-2 min-h-[140px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('sprites/Pixel1 (6).jpg', 'Sprite Creation Proof 6')">
+                                <img src="sprites/Pixel1 (6).jpg" alt="Creation Proof 6" class="h-32 w-full object-cover border border-retro-dark">
+                            </div>
+                            <h3 class="text-[11px] sm:text-xs text-retro-accent mb-0.5">Creation Proof #6</h3>
+                            <p class="text-[9px] text-retro-border">sprites/Pixel1 (6).jpg</p>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                            <div class="bg-retro-dark p-1.5 flex justify-center items-center mb-2 min-h-[140px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('sprites/Pixel1 (7).jpg', 'Sprite Creation Proof 7')">
+                                <img src="sprites/Pixel1 (7).jpg" alt="Creation Proof 7" class="h-32 w-full object-cover border border-retro-dark">
+                            </div>
+                            <h3 class="text-[11px] sm:text-xs text-retro-accent mb-0.5">Creation Proof #7</h3>
+                            <p class="text-[9px] text-retro-border">sprites/Pixel1 (7).jpg</p>
+                        </article>
+
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                            <div class="bg-retro-dark p-1.5 flex justify-center items-center mb-2 min-h-[140px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('sprites/Pixel1 (8).jpg', 'Sprite Creation Proof 8')">
+                                <img src="sprites/Pixel1 (8).jpg" alt="Creation Proof 8" class="h-32 w-full object-cover border border-retro-dark">
+                            </div>
+                            <h3 class="text-[11px] sm:text-xs text-retro-accent mb-0.5">Creation Proof #8</h3>
+                            <p class="text-[9px] text-retro-border">sprites/Pixel1 (8).jpg</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Animation Section (Initially Hidden) -->
+            <section id="animation-section" class="hidden">
+                <h2 class="text-xs sm:text-lg md:text-xl text-center mb-4 text-retro-border tracking-wide">--- ANIMATION SHOWCASE ---</h2>
+                
+                <div class="pb-10">
+                    <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-6 max-w-4xl mx-auto">
+                        <div class="bg-retro-dark p-1.5 sm:p-4 border-2 sm:border-4 border-retro-border shadow-pixel-solid mb-4 flex justify-center items-center overflow-hidden">
+                            <video class="w-full max-h-[60vh] object-contain rounded" controls preload="auto" playsinline webkit-playsinline>
+                                <source src="ANIMATION/ANIMATION 1.mp4" type="video/mp4">
+                                <source src="ANIMATION/ANIMATION 1.webm" type="video/webm">
+                                <source src="ANIMATION/ANIMATION 1.mov" type="video/quicktime">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="mt-2 text-center md:text-left">
+                            <h3 class="text-sm sm:text-xl text-retro-accent mb-2">(Latest 2d animation)</h3>
+                            <div class="text-[10px] sm:text-xs leading-relaxed space-y-2">
+                                <p><span class="text-retro-border">Style:</span> Traditional 2D Hand-Drawn Animation</p>
+                                <p><span class="text-retro-border">Context:</span> Initial story concept and character intro sequence.</p>
+                                <p><span class="text-retro-border">Description:</span> An early look at the primary character concept featuring introductory line art and narrative timing, establishing the project's visual identity and world-building tone.</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Music Production Section (Initially Hidden) -->
+            <section id="music-section" class="hidden">
+                <h2 class="text-xs sm:text-lg md:text-xl text-center mb-4 text-retro-border tracking-wide">--- MUSIC PRODUCTION ---</h2>
+
+                <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mb-6">
+                    <button onclick="showMusicSubFolder('main')" id="subtab-music-main" class="bg-retro-accent text-retro-dark border-2 sm:border-4 border-retro-dark px-3 py-2 text-[9px] sm:text-xs font-pixel shadow-pixel-solid active:translate-y-0.5 flex items-center gap-1.5">
+                        📁 MAIN TRACKS
+                    </button>
+                    <button onclick="showMusicSubFolder('proofs')" id="subtab-music-proofs" class="bg-[#4a4a6a] text-white border-2 sm:border-4 border-retro-dark px-3 py-2 text-[9px] sm:text-xs font-pixel shadow-pixel-solid hover:bg-retro-accent hover:text-retro-dark active:translate-y-0.5 flex items-center gap-1.5">
+                        📁 PROOFS
+                    </button>
+                </div>
+
+                <!-- SUB-FOLDER 1: MAIN TRACKS -->
+                <div id="music-main-container">
+                    <h3 class="text-[10px] sm:text-xs text-center mb-4 text-retro-border">MAIN SOUNDTRACK COMPOSITIONS</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 pb-10">
+                        <!-- Track 1 -->
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-5 flex flex-col items-center">
+                            <h4 class="text-[11px] sm:text-xs font-pixel text-retro-accent mb-2 text-center">Track 1 (Audio)</h4>
+                            <div class="w-full bg-retro-dark border-2 border-retro-border p-1.5 flex items-center justify-center min-h-[120px]">
+                                <video controls preload="auto" playsinline webkit-playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'><rect width='100%' height='100%' fill='%231a1a24'/><rect x='16' y='16' width='608' height='328' fill='%232d2d44' stroke='%238b9bb4' stroke-width='4'/><circle cx='220' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><circle cx='420' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><rect x='250' y='165' width='140' height='30' fill='%231a1a24' stroke='%238b9bb4' stroke-width='2'/><text x='50%' y='85' font-family='sans-serif' font-weight='bold' font-size='20' fill='%23e5b083' text-anchor='middle'>🎵 TRACK 01 - AUDIO</text><text x='50%' y='285' font-family='sans-serif' font-size='13' fill='%238b9bb4' text-anchor='middle'>[ TAP PLAY BELOW TO LISTEN ]</text></svg>" class="w-full h-auto max-h-[180px] rounded border border-retro-border bg-retro-dark object-contain">
+                                    <source src="MUSICPRODUCTION/R1(audio).mp4" type="video/mp4" />
+                                    <source src="MUSICPRODUCTION/R1(audio).webm" type="video/webm" />
+                                    <source src="MUSICPRODUCTION/R1(audio).mov" type="video/quicktime" />
+                                    <source src="MUSICPRODUCTION/R1(audio).m4a" type="audio/mp4" />
+                                    <source src="MUSICPRODUCTION/R1(audio).mp3" type="audio/mpeg" />
+                                    Your browser does not support video/audio.
+                                </video>
+                            </div>
+                        </article>
+
+                        <!-- Track 2 -->
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-5 flex flex-col items-center">
+                            <h4 class="text-[11px] sm:text-xs font-pixel text-retro-accent mb-2 text-center">Track 2 (Audio)</h4>
+                            <div class="w-full bg-retro-dark border-2 border-retro-border p-1.5 flex items-center justify-center min-h-[120px]">
+                                <video controls preload="auto" playsinline webkit-playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'><rect width='100%' height='100%' fill='%231a1a24'/><rect x='16' y='16' width='608' height='328' fill='%232d2d44' stroke='%238b9bb4' stroke-width='4'/><circle cx='220' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><circle cx='420' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><rect x='250' y='165' width='140' height='30' fill='%231a1a24' stroke='%238b9bb4' stroke-width='2'/><text x='50%' y='85' font-family='sans-serif' font-weight='bold' font-size='20' fill='%23e5b083' text-anchor='middle'>🎵 TRACK 02 - AUDIO</text><text x='50%' y='285' font-family='sans-serif' font-size='13' fill='%238b9bb4' text-anchor='middle'>[ TAP PLAY BELOW TO LISTEN ]</text></svg>" class="w-full h-auto max-h-[180px] rounded border border-retro-border bg-retro-dark object-contain">
+                                    <source src="MUSICPRODUCTION/R2(audio).mp4" type="video/mp4" />
+                                    <source src="MUSICPRODUCTION/R2(audio).webm" type="video/webm" />
+                                    <source src="MUSICPRODUCTION/R2(audio).mov" type="video/quicktime" />
+                                    <source src="MUSICPRODUCTION/R2(audio).m4a" type="audio/mp4" />
+                                    <source src="MUSICPRODUCTION/R2(audio).mp3" type="audio/mpeg" />
+                                    Your browser does not support video/audio.
+                                </video>
+                            </div>
+                        </article>
+
+                        <!-- Track 3 -->
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-5 flex flex-col items-center">
+                            <h4 class="text-[11px] sm:text-xs font-pixel text-retro-accent mb-2 text-center">Track 3 (Audio)</h4>
+                            <div class="w-full bg-retro-dark border-2 border-retro-border p-1.5 flex items-center justify-center min-h-[120px]">
+                                <video controls preload="auto" playsinline webkit-playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'><rect width='100%' height='100%' fill='%231a1a24'/><rect x='16' y='16' width='608' height='328' fill='%232d2d44' stroke='%238b9bb4' stroke-width='4'/><circle cx='220' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><circle cx='420' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><rect x='250' y='165' width='140' height='30' fill='%231a1a24' stroke='%238b9bb4' stroke-width='2'/><text x='50%' y='85' font-family='sans-serif' font-weight='bold' font-size='20' fill='%23e5b083' text-anchor='middle'>🎵 TRACK 03 - AUDIO</text><text x='50%' y='285' font-family='sans-serif' font-size='13' fill='%238b9bb4' text-anchor='middle'>[ TAP PLAY BELOW TO LISTEN ]</text></svg>" class="w-full h-auto max-h-[180px] rounded border border-retro-border bg-retro-dark object-contain">
+                                    <source src="MUSICPRODUCTION/R3(audio).mp4" type="video/mp4" />
+                                    <source src="MUSICPRODUCTION/R3(audio).webm" type="video/webm" />
+                                    <source src="MUSICPRODUCTION/R3(audio).mov" type="video/quicktime" />
+                                    <source src="MUSICPRODUCTION/R3(audio).m4a" type="audio/mp4" />
+                                    <source src="MUSICPRODUCTION/R3(audio).mp3" type="audio/mpeg" />
+                                    Your browser does not support video/audio.
+                                </video>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- SUB-FOLDER 2: PROOFS -->
+                <div id="music-proofs-container" class="hidden">
+                    <h3 class="text-[10px] sm:text-xs text-center mb-4 text-retro-border">COMPOSITION & RECORDING PROOFS</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 pb-10">
+                        <!-- Proof 1 -->
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-5 flex flex-col items-center">
+                            <h4 class="text-[11px] sm:text-xs font-pixel text-retro-accent mb-2 text-center">Proof 1</h4>
+                            <div class="w-full bg-retro-dark border-2 border-retro-border p-1.5 flex items-center justify-center min-h-[120px]">
+                                <video controls preload="auto" playsinline webkit-playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'><rect width='100%' height='100%' fill='%231a1a24'/><rect x='16' y='16' width='608' height='328' fill='%232d2d44' stroke='%238b9bb4' stroke-width='4'/><circle cx='220' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><circle cx='420' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><rect x='250' y='165' width='140' height='30' fill='%231a1a24' stroke='%238b9bb4' stroke-width='2'/><text x='50%' y='85' font-family='sans-serif' font-weight='bold' font-size='20' fill='%23e5b083' text-anchor='middle'>📼 PROOF 01 - RECORDING</text><text x='50%' y='285' font-family='sans-serif' font-size='13' fill='%238b9bb4' text-anchor='middle'>[ TAP PLAY BELOW TO LISTEN / WATCH ]</text></svg>" class="w-full h-auto max-h-[180px] rounded border border-retro-border bg-retro-dark object-contain">
+                                    <source src="MUSICPRODUCTION/R1(proof).mp4" type="video/mp4" />
+                                    <source src="MUSICPRODUCTION/R1(proof).webm" type="video/webm" />
+                                    <source src="MUSICPRODUCTION/R1(proof).mov" type="video/quicktime" />
+                                    <source src="MUSICPRODUCTION/R1(proof).m4a" type="audio/mp4" />
+                                    <source src="MUSICPRODUCTION/R1(proof).mp3" type="audio/mpeg" />
+                                    Your browser does not support video/audio.
+                                </video>
+                            </div>
+                        </article>
+
+                        <!-- Proof 2 -->
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-5 flex flex-col items-center">
+                            <h4 class="text-[11px] sm:text-xs font-pixel text-retro-accent mb-2 text-center">Proof 2</h4>
+                            <div class="w-full bg-retro-dark border-2 border-retro-border p-1.5 flex items-center justify-center min-h-[120px]">
+                                <video controls preload="auto" playsinline webkit-playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'><rect width='100%' height='100%' fill='%231a1a24'/><rect x='16' y='16' width='608' height='328' fill='%232d2d44' stroke='%238b9bb4' stroke-width='4'/><text x='50%' y='170' font-family='sans-serif' font-weight='bold' font-size='22' fill='%23e5b083' text-anchor='middle'>🎬 PROOF 02 - VIDEO</text><text x='50%' y='210' font-family='sans-serif' font-size='13' fill='%238b9bb4' text-anchor='middle'>[ TAP PLAY TO WATCH ]</text></svg>" class="w-full h-auto max-h-[180px] rounded border border-retro-border bg-retro-dark object-contain">
+                                    <source src="MUSICPRODUCTION/R2(proof).mp4" type="video/mp4" />
+                                    <source src="MUSICPRODUCTION/R2(proof).webm" type="video/webm" />
+                                    <source src="MUSICPRODUCTION/R2(proof).mov" type="video/quicktime" />
+                                    <source src="MUSICPRODUCTION/R2(proof).m4a" type="audio/mp4" />
+                                    <source src="MUSICPRODUCTION/R2(proof).mp3" type="audio/mpeg" />
+                                    Your browser does not support video/audio.
+                                </video>
+                            </div>
+                        </article>
+
+                        <!-- Proof 3 -->
+                        <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3 sm:p-5 flex flex-col items-center">
+                            <h4 class="text-[11px] sm:text-xs font-pixel text-retro-accent mb-2 text-center">Proof 3</h4>
+                            <div class="w-full bg-retro-dark border-2 border-retro-border p-1.5 flex items-center justify-center min-h-[120px]">
+                                <video controls preload="auto" playsinline webkit-playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'><rect width='100%' height='100%' fill='%231a1a24'/><rect x='16' y='16' width='608' height='328' fill='%232d2d44' stroke='%238b9bb4' stroke-width='4'/><circle cx='220' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><circle cx='420' cy='180' r='45' fill='%231a1a24' stroke='%23e5b083' stroke-width='4'/><rect x='250' y='165' width='140' height='30' fill='%231a1a24' stroke='%238b9bb4' stroke-width='2'/><text x='50%' y='85' font-family='sans-serif' font-weight='bold' font-size='20' fill='%23e5b083' text-anchor='middle'>📼 PROOF 03 - RECORDING</text><text x='50%' y='285' font-family='sans-serif' font-size='13' fill='%238b9bb4' text-anchor='middle'>[ TAP PLAY BELOW TO LISTEN / WATCH ]</text></svg>" class="w-full h-auto max-h-[180px] rounded border border-retro-border bg-retro-dark object-contain">
+                                    <source src="MUSICPRODUCTION/R3(proof).mp4" type="video/mp4" />
+                                    <source src="MUSICPRODUCTION/R3(proof).webm" type="video/webm" />
+                                    <source src="MUSICPRODUCTION/R3(proof).mov" type="video/quicktime" />
+                                    <source src="MUSICPRODUCTION/R3(proof).m4a" type="audio/mp4" />
+                                    <source src="MUSICPRODUCTION/R3(proof).mp3" type="audio/mpeg" />
+                                    Your browser does not support video/audio.
+                                </video>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Photography Section (Initially Hidden) -->
+            <section id="photography-section" class="hidden">
+                <h2 class="text-xs sm:text-lg md:text-xl text-center mb-1 text-retro-border tracking-wide">--- PHOTOGRAPHY GALLERY & SLIDESHOW ---</h2>
+                <p class="text-[9px] sm:text-xs text-center text-retro-accent mb-6 tracking-wide">(FEATURED CAROUSEL & BACKGROUND MUSIC)</p>
+
+                <!-- Audio Player Card -->
+                <div class="pixel-container p-3 sm:p-6 mb-6 max-w-2xl mx-auto text-center shadow-pixel-solid">
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5">
+                        <button onclick="toggleMusic()" id="music-play-btn" class="w-full sm:w-auto bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark text-white border-2 sm:border-4 border-retro-dark py-2.5 px-4 text-xs tracking-wider transition-all shadow-pixel-solid active:translate-y-1">
+                            ▶ PLAY MUSIC
+                        </button>
+                        <audio id="photo-bg-music" controls class="w-full max-w-md rounded bg-retro-dark p-1 border-2 border-retro-border">
+                            <source src="Olivia.mp3" type="audio/mpeg">
+                            Your browser does not support the audio player.
+                        </audio>
+                    </div>
+                </div>
+
+                <!-- Photo Slideshow / Carousel Container -->
+                <div class="pixel-container p-3 sm:p-8 max-w-4xl mx-auto shadow-pixel-solid mb-10">
+                    <div class="relative bg-retro-dark p-2 border-2 sm:border-4 border-retro-border flex flex-col items-center justify-center min-h-[200px] sm:min-h-[420px] overflow-hidden">
+                        <img id="carousel-img" src="PHOTO/1.jPEG" alt="Featured Photography" class="max-h-[50vh] w-auto object-contain cursor-pointer transition-opacity duration-300" onclick="openModalFromCarousel()">
+                        
+                        <div class="mt-2.5 flex justify-between items-center w-full px-1 text-[9px] sm:text-xs text-retro-accent font-pixel gap-2">
+                            <span id="carousel-caption" class="truncate">PHOTO/1.jPEG</span>
+                            <span id="carousel-counter" class="bg-retro-bg px-2 py-0.5 border border-retro-border flex-shrink-0">1 / 13</span>
                         </div>
                     </div>
-                </article>
 
-                <!-- Khrixia Sprite Card -->
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="khrixia_sprite.png" alt="Khrixia" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                    <div class="flex justify-between items-center mt-3 gap-1.5">
+                        <button onclick="prevPhoto()" class="bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark text-white border-2 sm:border-4 border-retro-dark py-2 px-3 text-[9px] sm:text-xs tracking-wider shadow-pixel-solid active:translate-y-1">
+                            &lt; PREV
+                        </button>
+                        <button onclick="toggleAutoPlay()" id="autoplay-btn" class="bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark text-white border-2 sm:border-4 border-retro-dark py-2 px-2 text-[8px] sm:text-xs tracking-wider shadow-pixel-solid active:translate-y-1">
+                            ▶ AUTO
+                        </button>
+                        <button onclick="nextPhoto()" class="bg-[#4a4a6a] hover:bg-retro-accent hover:text-retro-dark text-white border-2 sm:border-4 border-retro-dark py-2 px-3 text-[9px] sm:text-xs tracking-wider shadow-pixel-solid active:translate-y-1">
+                            NEXT &gt;
+                        </button>
                     </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Char: Khrixia</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Class:</span> Novice Spellweaver / Adventurer</p>
-                            <p><span class="text-retro-border">Context:</span> A spirited young mage who travels across realms to study ancient elemental relics and magical arts.</p>
-                            <p><span class="text-retro-border">Lore:</span> Recognized by her crimson hair ribbon and energetic demeanor, Khrixia possesses a natural affinity for magic and an unyielding curiosity for unexplored dungeons.</p>
+
+                    <div class="flex overflow-x-auto gap-2 mt-4 pb-2 no-scrollbar border-t-2 border-retro-border/40 pt-3" id="thumbnail-container">
+                        <!-- Dynamic Thumbnails -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Schoolworks Section (Initially Hidden) -->
+            <section id="schoolworks-section" class="hidden">
+                <h2 class="text-xs sm:text-lg md:text-xl text-center mb-1 text-retro-border tracking-wide">--- SCHOOLWORKS GALLERY ---</h2>
+                <p class="text-[9px] sm:text-xs text-center text-retro-accent mb-6 tracking-wide">(TAP ANY IMAGE TO VIEW FULL SIZE)</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-10">
+                    <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                        <div class="bg-retro-dark p-2 flex justify-center items-center mb-2 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('Schoolworks/Dove.jpg', 'Dove Artwork (Schoolworks/Dove.jpg)')">
+                            <img src="Schoolworks/Dove.jpg" alt="Dove Artwork" class="h-40 w-full object-cover border border-retro-dark">
                         </div>
-                    </div>
-                </article>
+                        <h3 class="text-[11px] sm:text-sm text-retro-accent mb-0.5">Dove Artwork</h3>
+                        <p class="text-[9px] text-retro-border">Schoolworks/Dove.jpg</p>
+                    </article>
 
-                <!-- Barbarian Card -->
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="barbarian_sprite.png" alt="Northern Barbarian" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Char: Northern Barbarian</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Class:</span> Berserker / Tribal Warrior</p>
-                            <p><span class="text-retro-border">Context:</span> A fearless warrior hailing from the frozen northern peaks, equipped with heavy armor plates and a battle-worn greataxe.</p>
-                            <p><span class="text-retro-border">Lore:</span> Raised in unforgiving wilderness conditions, this hardened fighter channels primal fury in combat to shatter frontline defenses.</p>
+                    <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                        <div class="bg-retro-dark p-2 flex justify-center items-center mb-2 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('Schoolworks/Dove2.jpg', 'Dove Artwork 2 (Schoolworks/Dove2.jpg)')">
+                            <img src="Schoolworks/Dove2.jpg" alt="Dove Artwork 2" class="h-40 w-full object-cover border border-retro-dark">
                         </div>
-                    </div>
-                </article>
+                        <h3 class="text-[11px] sm:text-sm text-retro-accent mb-0.5">Dove Artwork 2</h3>
+                        <p class="text-[9px] text-retro-border">Schoolworks/Dove2.jpg</p>
+                    </article>
 
-                <!-- Shadow Shinobi (Ninja) Card -->
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="ninja_sprite.png" alt="Shadow Shinobi" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Char: Shadow Shinobi</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Class:</span> Assassin / Master Ninja</p>
-                            <p><span class="text-retro-border">Context:</span> An elusive warrior clad in dark garb and a crimson headband, carrying a lethal back-slung katana.</p>
-                            <p><span class="text-retro-border">Lore:</span> Trained in mist-shrouded mountain monasteries, this silent operative strikes from the shadows before adversaries even notice their presence.</p>
+                    <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-3">
+                        <div class="bg-retro-dark p-2 flex justify-center items-center mb-2 min-h-[160px] sm:min-h-[220px] border-2 border-retro-border cursor-pointer" onclick="openImageModal('Schoolworks/Painting.jpg', 'Painting Project (Schoolworks/Painting.jpg)')">
+                            <img src="Schoolworks/Painting.jpg" alt="Painting Project" class="h-40 w-full object-cover border border-retro-dark">
                         </div>
-                    </div>
-                </article>
+                        <h3 class="text-[11px] sm:text-sm text-retro-accent mb-0.5">Painting Project</h3>
+                        <p class="text-[9px] text-retro-border">Schoolworks/Painting.jpg</p>
+                    </article>
+                </div>
+            </section>
 
-                <!-- Alchemist Scientist Card -->
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="scientist_sprite.png" alt="Arcane Scientist" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Char: Arcane Scientist</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Class:</span> Alchemist / Researcher</p>
-                            <p><span class="text-retro-border">Context:</span> An eccentric scholar clad in a pristine white lab coat and protective goggles, holding a flask of volatile green liquid.</p>
-                            <p><span class="text-retro-border">Lore:</span> Dedicated to unlocking the secrets of elemental alchemy, he spends long nights concocting experimental potions to aid heroes on their journeys.</p>
-                        </div>
-                    </div>
-                </article>
+        </main>
+    </div>
 
-                <!-- Jerick & Wyngard Sprite Card -->
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="jerick_wyngard_sprite.png" alt="Jerick & Wyngard" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Char: Jerick & Wyngard</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Class:</span> Vanguard Duo (Paladin & Ranger)</p>
-                            <p><span class="text-retro-border">Context:</span> An armored warrior in blue plate steel (Jerick) and a nimble forest scout clad in a green cloak (Wyngard) bound by a sworn brotherhood.</p>
-                            <p><span class="text-retro-border">Lore:</span> Standing shoulder-to-shoulder through endless perilous ventures, Jerick provides an impenetrable frontline shield while Wyngard delivers swift, precision marksmanship from the flanks.</p>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <!-- Mythical Creatures Section -->
-        <section id="mythical-section" class="hidden">
-            <h2 class="text-2xl text-center mb-8 text-retro-border">--- MYTHICAL CREATURES ---</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="wolf_sprite.png" alt="Wolf Sprite" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Creature: Mythical Wolf</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Type:</span> Mythical Beast</p>
-                            <p><span class="text-retro-border">Context:</span> A fierce mythical wolf with glowing red eyes and sharp fangs.</p>
-                            <p><span class="text-retro-border">Lore:</span> Stalks the twilight realms, guarding ancient grounds with unyielding fierce instinct.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="slime_sprite.png" alt="Acid Slime" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Creature: Acid Slime</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Type:</span> Amorphous Organism</p>
-                            <p><span class="text-retro-border">Context:</span> Inhabits damp dungeon vaults and subterranean waterways, dissolving organic debris to sustain its viscous form.</p>
-                            <p><span class="text-retro-border">Lore:</span> Born from magic-infused runoff, these sentient blobs absorb ambient mana and defend their territory by secreting corrosive acids.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="goblin_sprite.png" alt="Goblin Scout" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Creature: Goblin Scout</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Type:</span> Humanoid Monster</p>
-                            <p><span class="text-retro-border">Context:</span> Roams murky forest borders and rocky caves in small raiding packs, scouting ahead for targets.</p>
-                            <p><span class="text-retro-border">Lore:</span> Cunning and agile, these green-skinned creatures rely on stealth, sharp iron daggers, and sharp senses to surprise unsuspecting travelers.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="zombie_sprite.png" alt="Undead Zombie" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Creature: Undead Zombie</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Type:</span> Reanimated Undead</p>
-                            <p><span class="text-retro-border">Context:</span> Rises from ancient burial grounds and ruined crypts, wandering aimlessly in search of living prey.</p>
-                            <p><span class="text-retro-border">Lore:</span> Animated by dark necromancy, these persistent corpses feel no pain and relentlessly pursue travelers through forgotten catacombs.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="winged_pig_sprite.png" alt="Winged Pig" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Creature: Celestial Winged Pig</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Type:</span> Enchanted Beast</p>
-                            <p><span class="text-retro-border">Context:</span> Soars through cloudlit mountain peaks and enchanted sky sanctuaries, far above the reach of terrestrial predators.</p>
-                            <p><span class="text-retro-border">Lore:</span> Blessed by ancient celestial spirits, these rare winged swine bring good fortune and joy to any traveler fortunate enough to spot them gliding across the horizon.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[220px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="unicorn_sprite.png" alt="Celestial Unicorn" class="pixelated h-44 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Creature: Celestial Unicorn</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Type:</span> Legendary Beast</p>
-                            <p><span class="text-retro-border">Context:</span> Inhabits enchanted starlight glades and sacred ancient forests, guarded by arcane barriers.</p>
-                            <p><span class="text-retro-border">Lore:</span> A pure equine creature bearing a spiraled radiant horn capable of purifying corrupt magic and healing mortal wounds with a single touch.</p>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <!-- Items Section -->
-        <section id="items-section" class="hidden">
-            <h2 class="text-2xl text-center mb-8 text-retro-border">--- ITEMS ---</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="potion_sprite.png" alt="Health Potion" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Item: Health Potion</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Role:</span> Consumable</p>
-                            <p><span class="text-retro-border">Context:</span> Brewed in subterranean alchemy chambers, this basic item restores vitality.</p>
-                            <p><span class="text-retro-border">Lore:</span> Sealed inside reinforced glass with a wax-soaked cork to prevent premature evaporation in harsh environments.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="broom_sprite.png" alt="Witch Broomstick" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Item: Witch Broomstick</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Role:</span> Equipment / Mount</p>
-                            <p><span class="text-retro-border">Context:</span> Crafted from elderwood branches and bound with enchanted cordage, enabling aerial navigation.</p>
-                            <p><span class="text-retro-border">Lore:</span> Imbued with levitation runes along the shaft, allowing magic wielders to travel across treacherous terrain effortlessly.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="sword_sprite.png" alt="Ruby Broadsword" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Item: Ruby Broadsword</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Role:</span> Melee Weapon</p>
-                            <p><span class="text-retro-border">Context:</span> Forged from high-grade refined steel with a gilded crossguard and an embedded ruby core.</p>
-                            <p><span class="text-retro-border">Lore:</span> Standard issue blade for realm knights, enchanted to channel offensive physical energy through the hilt's crystal gemstone.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="wand_sprite.png" alt="Arcane Wand" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Item: Arcane Wand</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Role:</span> Magic Catalyst</p>
-                            <p><span class="text-retro-border">Context:</span> Carved from polished elderwood and capped with a glowing cyan mana crystal tip.</p>
-                            <p><span class="text-retro-border">Lore:</span> Handcrafted by elite spellweavers to focus elemental energy into precise, high-potency magic projectiles.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="bow_sprite.png" alt="Huntsman Longbow" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Item: Huntsman Longbow</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Role:</span> Ranged Weapon</p>
-                            <p><span class="text-retro-border">Context:</span> Bent from cured yew wood, capped with gold tips, and strung with tightly spun silken cord.</p>
-                            <p><span class="text-retro-border">Lore:</span> Favored by woodland rangers for silent long-distance marksmanship through dense foliage and open valleys.</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="bg-[#4a4a6a] border-4 border-retro-dark shadow-pixel-solid p-4 transition-transform hover:-translate-y-1 hover:shadow-pixel-hover">
-                    <div class="bg-retro-dark p-4 flex justify-center items-center mb-4 min-h-[200px] border-2 border-retro-border relative overflow-hidden">
-                        <img src="rope_sprite.png" alt="Adventurer's Rope" class="pixelated h-36 w-auto object-contain transition-transform duration-300 hover:scale-105">
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg text-retro-accent mb-2">Item: Adventurer's Rope</h3>
-                        <div class="text-xs space-y-3 leading-loose">
-                            <p><span class="text-retro-border">Role:</span> Utility / Gear</p>
-                            <p><span class="text-retro-border">Context:</span> Woven from high-tensile hemp fibers and bound into a tight, portable coil.</p>
-                            <p><span class="text-retro-border">Lore:</span> An indispensable tool for dungeon exploration, spelunking steep cliffs, and securing heavy gear on long journeys.</p>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-    </main>
-
+    <!-- JavaScript Navigation, Lightbox & Mobile Carousel Logic -->
     <script>
+        const photosList = [
+            'PHOTO/1.jPEG',
+            'PHOTO/2.jpeg',
+            'PHOTO/3.jpeg',
+            'PHOTO/4.jpeg',
+            'PHOTO/5.jpeg',
+            'PHOTO/6.jpeg',
+            'PHOTO/7.jpeg',
+            'PHOTO/8.jpeg',
+            'PHOTO/9.jpeg',
+            'PHOTO/10.jpeg',
+            'PHOTO/11.jpeg',
+            'PHOTO/12.jpeg',
+            'PHOTO/13.jpeg'
+        ];
+
+        let currentPhotoIndex = 0;
+        let autoPlayTimer = null;
+
         function startGame() {
             document.getElementById('main-menu-overlay').classList.add('hidden');
-            showSection('humans');
+            showSection('pixel-art');
         }
 
         function openProfileFromMenu() {
@@ -440,12 +806,12 @@
         function exitSystem() {
             if (confirm("SYSTEM SHUTDOWN: Do you want to terminate this session?")) {
                 window.close();
-                document.body.innerHTML = "<div class='flex h-screen items-center justify-center text-center font-pixel text-retro-accent bg-retro-dark'><p>SYSTEM TERMINATED.<br><br>PLEASE CLOSE THIS TAB.</p></div>";
+                document.body.innerHTML = "<div class='flex h-screen items-center justify-center text-center font-pixel text-retro-accent bg-retro-dark p-4'><p>SYSTEM TERMINATED.<br><br>PLEASE CLOSE THIS TAB.</p></div>";
             }
         }
 
         function showSection(section) {
-            const sections = ['humans', 'mythical', 'items', 'profile'];
+            const sections = ['pixel-art', 'animation', 'music', 'photography', 'schoolworks', 'profile'];
             
             sections.forEach(sec => {
                 const secElement = document.getElementById(`${sec}-section`);
@@ -455,14 +821,181 @@
                     if (sec === section) {
                         secElement.classList.remove('hidden');
                         tabElement.classList.add('text-retro-accent', 'border-retro-accent');
-                        tabElement.classList.remove('text-gray-500', 'border-transparent');
+                        tabElement.classList.remove('text-gray-400', 'border-transparent');
                     } else {
                         secElement.classList.add('hidden');
                         tabElement.classList.remove('text-retro-accent', 'border-retro-accent');
-                        tabElement.classList.add('text-gray-500', 'border-transparent');
+                        tabElement.classList.add('text-gray-400', 'border-transparent');
                     }
                 }
             });
+
+            if (section === 'photography') {
+                updateCarousel();
+                renderThumbnails();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showPixelSubFolder(folder) {
+            const finishedSec = document.getElementById('pixel-finished-container');
+            const proofsSec = document.getElementById('pixel-proofs-container');
+            const btnFinished = document.getElementById('subtab-finished');
+            const btnProofs = document.getElementById('subtab-proofs');
+
+            if (folder === 'finished') {
+                finishedSec.classList.remove('hidden');
+                proofsSec.classList.add('hidden');
+                btnFinished.classList.add('bg-retro-accent', 'text-retro-dark');
+                btnFinished.classList.remove('bg-[#4a4a6a]', 'text-white');
+                btnProofs.classList.remove('bg-retro-accent', 'text-retro-dark');
+                btnProofs.classList.add('bg-[#4a4a6a]', 'text-white');
+            } else {
+                finishedSec.classList.add('hidden');
+                proofsSec.classList.remove('hidden');
+                btnProofs.classList.add('bg-retro-accent', 'text-retro-dark');
+                btnProofs.classList.remove('bg-[#4a4a6a]', 'text-white');
+                btnFinished.classList.remove('bg-retro-accent', 'text-retro-dark');
+                btnFinished.classList.add('bg-[#4a4a6a]', 'text-white');
+            }
+        }
+
+        function showMusicSubFolder(folder) {
+            const mainSec = document.getElementById('music-main-container');
+            const proofsSec = document.getElementById('music-proofs-container');
+            const btnMain = document.getElementById('subtab-music-main');
+            const btnProofs = document.getElementById('subtab-music-proofs');
+
+            if (folder === 'main') {
+                if (mainSec) mainSec.classList.remove('hidden');
+                if (proofsSec) proofsSec.classList.add('hidden');
+                if (btnMain) {
+                    btnMain.classList.add('bg-retro-accent', 'text-retro-dark');
+                    btnMain.classList.remove('bg-[#4a4a6a]', 'text-white');
+                }
+                if (btnProofs) {
+                    btnProofs.classList.remove('bg-retro-accent', 'text-retro-dark');
+                    btnProofs.classList.add('bg-[#4a4a6a]', 'text-white');
+                }
+            } else {
+                if (mainSec) mainSec.classList.add('hidden');
+                if (proofsSec) proofsSec.classList.remove('hidden');
+                if (btnProofs) {
+                    btnProofs.classList.add('bg-retro-accent', 'text-retro-dark');
+                    btnProofs.classList.remove('bg-[#4a4a6a]', 'text-white');
+                }
+                if (btnMain) {
+                    btnMain.classList.remove('bg-retro-accent', 'text-retro-dark');
+                    btnMain.classList.add('bg-[#4a4a6a]', 'text-white');
+                }
+            }
+        }
+
+        function toggleMusic() {
+            const music = document.getElementById('photo-bg-music');
+            const btn = document.getElementById('music-play-btn');
+            if (music.paused) {
+                music.play();
+                btn.textContent = '⏸ PAUSE MUSIC';
+                btn.classList.add('bg-green-600');
+            } else {
+                music.pause();
+                btn.textContent = '▶ PLAY MUSIC';
+                btn.classList.remove('bg-green-600');
+            }
+        }
+
+        function updateCarousel() {
+            const img = document.getElementById('carousel-img');
+            const caption = document.getElementById('carousel-caption');
+            const counter = document.getElementById('carousel-counter');
+
+            if (img && caption && counter) {
+                img.src = photosList[currentPhotoIndex];
+                caption.textContent = `Capture #${currentPhotoIndex + 1} (${photosList[currentPhotoIndex]})`;
+                counter.textContent = `${currentPhotoIndex + 1} / ${photosList.length}`;
+            }
+            updateActiveThumbnail();
+        }
+
+        function nextPhoto() {
+            currentPhotoIndex = (currentPhotoIndex + 1) % photosList.length;
+            updateCarousel();
+        }
+
+        function prevPhoto() {
+            currentPhotoIndex = (currentPhotoIndex - 1 + photosList.length) % photosList.length;
+            updateCarousel();
+        }
+
+        function goToPhoto(index) {
+            currentPhotoIndex = index;
+            updateCarousel();
+        }
+
+        function toggleAutoPlay() {
+            const btn = document.getElementById('autoplay-btn');
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+                autoPlayTimer = null;
+                btn.textContent = '▶ AUTO';
+                btn.classList.remove('bg-green-600');
+            } else {
+                autoPlayTimer = setInterval(nextPhoto, 3000);
+                btn.textContent = '⏸ PAUSE';
+                btn.classList.add('bg-green-600');
+            }
+        }
+
+        function renderThumbnails() {
+            const container = document.getElementById('thumbnail-container');
+            if (!container || container.children.length > 0) return;
+
+            photosList.forEach((src, idx) => {
+                const thumb = document.createElement('img');
+                thumb.src = src;
+                thumb.id = `thumb-${idx}`;
+                thumb.className = `h-14 w-14 sm:h-20 sm:w-20 object-cover border-2 cursor-pointer flex-shrink-0 transition-all ${idx === currentPhotoIndex ? 'border-retro-accent scale-105 opacity-100' : 'border-retro-dark opacity-60'}`;
+                thumb.onclick = () => goToPhoto(idx);
+                container.appendChild(thumb);
+            });
+        }
+
+        function updateActiveThumbnail() {
+            photosList.forEach((_, idx) => {
+                const thumb = document.getElementById(`thumb-${idx}`);
+                if (thumb) {
+                    if (idx === currentPhotoIndex) {
+                        thumb.classList.add('border-retro-accent', 'scale-105', 'opacity-100');
+                        thumb.classList.remove('border-retro-dark', 'opacity-60');
+                    } else {
+                        thumb.classList.remove('border-retro-accent', 'scale-105', 'opacity-100');
+                        thumb.classList.add('border-retro-dark', 'opacity-60');
+                    }
+                }
+            });
+        }
+
+        function openModalFromCarousel() {
+            openImageModal(photosList[currentPhotoIndex], `Capture #${currentPhotoIndex + 1} (${photosList[currentPhotoIndex]})`);
+        }
+
+        function openImageModal(src, caption) {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-img');
+            const modalCaption = document.getElementById('modal-caption');
+            
+            modalImg.src = src;
+            modalCaption.textContent = caption || '';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
     </script>
 </body>

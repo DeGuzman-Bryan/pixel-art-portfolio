@@ -1,7 +1,6 @@
 import os
 from PIL import Image
 
-# Sinisigurado na mai-save sa labas ng 'sprites' folder (sa root directory)
 script_dir = os.path.dirname(os.path.abspath(__file__))
 output_path = os.path.join(script_dir, "../ninja_sprite.png")
 
